@@ -2,7 +2,9 @@ package martinsgodapizzor.comradepizza.controllers;
 
 import martinsgodapizzor.comradepizza.entities.Pizza;
 import martinsgodapizzor.comradepizza.repositories.PizzaRepo;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -40,7 +42,7 @@ public class PizzaController {
             pizzaRepo.deleteByName(name);
             return "Pizza <" + name + "> Removed";
         }
-        return "Pizza Not Found";
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     @Transactional
@@ -49,7 +51,7 @@ public class PizzaController {
         String[] values = pizza.split("[$]");
 
         if (pizzaRepo.findById(values[0]).isEmpty()) {
-            return "Invalid Pizza! You cannot replace something that doesn't exist.";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         }
         Pizza newPizza = pizzaRepo.getById(values[0]);
@@ -59,7 +61,7 @@ public class PizzaController {
                 price = Integer.parseInt(values[1]);
                 newPizza.setPrice(price);
             } catch (NumberFormatException a) {
-                return "Incorrect Format";
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
             }
         } else if (values.length > 2) {
             if (!values[1].isBlank()) {
@@ -67,18 +69,19 @@ public class PizzaController {
                     price = Integer.parseInt(values[1]);
                     newPizza.setPrice(price);
                 } catch (NumberFormatException a) {
-                    return "Incorrect Format";
+                    throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
                 }
             }
             newPizza.setIngredients(values[2]);
         } else {
-            return "Incorrect Format";
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
         }
         pizzaRepo.save(newPizza);
         return "Pizza Updated";
 
     }
 
+    //comrade/admin/PIZZANAMN$PRIS$INGREDIENSER
     @PostMapping("/comrade/admin/{value}")
     public String addPizza(@PathVariable String value) {
         String[] values = value.split("[$]");
@@ -89,12 +92,12 @@ public class PizzaController {
             ingredients = values[2];
             name = values[0];
         } catch (IndexOutOfBoundsException e) {
-            return "Incorrect format";
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
         }
         try {
             price = Integer.parseInt(values[1]);
         } catch (NumberFormatException num) {
-            return "Incorrect format";
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
         }
         pizzaRepo.save(new Pizza(name, price, ingredients));
         return "Pizza added";
@@ -106,7 +109,8 @@ public class PizzaController {
         int price;
         String name;
         String ingredients;
-        if (values.length < 3) return "Incorrect format";
+
+        if (values.length < 3) throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
 
             name = values[0];
             ingredients = values[2];
@@ -114,7 +118,7 @@ public class PizzaController {
             try {
                 price = Integer.parseInt(values[1]);
             } catch (NumberFormatException e) {
-                return "Incorrect format";
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
             }
 
             if (pizzaRepo.findById(name).isPresent()) {
@@ -123,7 +127,7 @@ public class PizzaController {
                 return "Pizza updated";
             }
 
-            return "Pizza not found";
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
     }
