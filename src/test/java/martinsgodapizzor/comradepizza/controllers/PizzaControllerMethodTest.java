@@ -36,27 +36,4 @@ public class PizzaControllerMethodTest {
 
     }
 
-    @Test
-    void updatePizzaTest() {
-
-        /*
-        String mockPizzaPriceUpdate = "/comrade/pizzanamn$80";
-        String mockPizzaIngredientsUpdate = "/comrade/pizzanamn$$nyasaker";
-
-
-         */
-        pizzaController.addPizza(mockUrlCorrect);
-        String mockUrlCorrectFAIL = "/comrade/pizzanamn4&45ingredien#ser";
-
-
-
-            pizzaController.updatePizza(mockUrlCorrectFAIL);
-            assertThat(pizzaController.pizzaList().get(0).getName().equals("pizzanamn"));
-            assertThat(pizzaController.pizzaList().get(0).getPrice()==45);
-            assertThat(pizzaController.pizzaList().get(0).getIngredients().equals("ingredienser"));
-
-
-
-    }
-
 }
