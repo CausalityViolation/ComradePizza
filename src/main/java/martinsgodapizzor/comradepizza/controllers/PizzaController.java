@@ -26,7 +26,7 @@ public class PizzaController {
     }
 
 
-    @GetMapping("/comrade/search/{searchParameter}")
+    @GetMapping("/comrade/{searchParameter}")
     Set<Pizza> getPizzasWithIngredient(@PathVariable String searchParameter) {
         Set<Pizza> pizzor = pizzaRepo.findPizzaByIngredientsContaining(searchParameter);
         Set<Pizza> mer = pizzaRepo.findAllByNameContaining(searchParameter);
@@ -35,7 +35,7 @@ public class PizzaController {
     }
 
     @Transactional
-    @DeleteMapping("/comrade/admin/delete/{name}")
+    @DeleteMapping("/comrade/admin/{name}")
     public String removePizza(@PathVariable String name) {
 
         if (!pizzaRepo.findAllByName(name).isEmpty()) {
