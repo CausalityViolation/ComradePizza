@@ -112,22 +112,22 @@ public class PizzaController {
 
         if (values.length < 3) throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
 
-            name = values[0];
-            ingredients = values[2];
+        name = values[0];
+        ingredients = values[2];
 
-            try {
-                price = Integer.parseInt(values[1]);
-            } catch (NumberFormatException e) {
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
-            }
-
-            if (pizzaRepo.findById(name).isPresent()) {
-                pizzaRepo.deleteById(name);
-                pizzaRepo.save(new Pizza(name, price, ingredients));
-                return "Pizza updated";
-            }
-
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        try {
+            price = Integer.parseInt(values[1]);
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
         }
 
+        if (pizzaRepo.findById(name).isPresent()) {
+            pizzaRepo.deleteById(name);
+            pizzaRepo.save(new Pizza(name, price, ingredients));
+            return "Pizza updated";
+        }
+
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
+
+}
